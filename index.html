@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>FIRE</title>
+    <style media="screen">
+      body{
+        background-color: #000;
+      }
+    </style>
+  </head>
+  <body>
+      <canvas id="canvas" width="512" height="512"></canvas>
+  </body>
+  <script type="text/javascript">
+    var canvas = document.getElementById('canvas')
+    var width =  Math.floor(canvas.width/10)
+    var height = Math.floor(canvas.height/10)
+    var ctx = canvas.getContext('2d')
+    var zoom = 1
+
+    var fire = createMatrix(width,height)
+
+    function createMatrix(x,y){
+      let matrix = []
+      for (var i = 0; i < x; i++) {
+        matrix[i] = []
+        for (var j = 0; j < y; j++) {
+          matrix[i][j] = 0
+        }
+      }
+      return matrix;
+    }
+
+    function burn(){
+      for (let i = 0; i < width; i++) {
+        fire[i][width-2] = Math.floor(Math.random()*255)
+      }
+      for (let x = 2; x < width-2; x++) {
+        for (let y = 2; y < height-2; y++) {
+          fire[x][y] = Math.floor(
+            (fire[x][y+1] + fire[x][y+2] + fire[x+1][y+1] + fire[x-1][y+1])/4.2
+          )
+          ctx.fillStyle = "rgb("+fire[x][y]+",0,0)"
+          ctx.fillRect( (x*10) , (y*10) ,10,10)
+        }
+      }
+      window.requestAnimationFrame(burn)
+    }
+    window.requestAnimationFrame(burn)
+  </script>
+</html>
